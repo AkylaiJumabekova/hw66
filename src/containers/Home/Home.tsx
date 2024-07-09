@@ -41,6 +41,8 @@ const Home: React.FC = () => {
             setLoading(true);
             await axiosApi.delete(`/meals/${id}.json`);
             setMeals(prevMeals => prevMeals.filter(meal => meal.id !== id));
+        } catch (error) {
+            console.error('Error deleting meal:', error);
         } finally {
             setLoading(false);
         }

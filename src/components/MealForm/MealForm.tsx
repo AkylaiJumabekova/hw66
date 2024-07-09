@@ -21,6 +21,8 @@ const MealForm: React.FC = () => {
                 try {
                     const response = await axiosApi.get(`/meals/${id}.json`);
                     setMeal({ ...response.data, id });
+                } catch (error) {
+                    console.error('Error fetching meal:', error);
                 } finally {
                     setLoading(false);
                 }
@@ -47,6 +49,8 @@ const MealForm: React.FC = () => {
                 await axiosApi.post('/meals.json', meal);
             }
             navigate('/');
+        } catch (error) {
+            console.error('Error submitting meal:', error);
         } finally {
             setLoading(false);
         }
