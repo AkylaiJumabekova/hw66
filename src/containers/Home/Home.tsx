@@ -4,10 +4,12 @@ import axiosApi from '../../axiosApi';
 import { useNavigate } from 'react-router-dom';
 import { Meal } from '../../types';
 import { Spinner } from 'react-bootstrap';
+import Notification from '../../components/Notification/Notification';
 
 const Home: React.FC = () => {
     const [meals, setMeals] = useState<Meal[]>([]);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
 
     const fetchMeals = useCallback(async () => {
@@ -24,6 +26,8 @@ const Home: React.FC = () => {
                 }
             }
             setMeals(fetchedMeals);
+        } catch (error) {
+            setError('Error fetching meals');
         } finally {
             setLoading(false);
         }
@@ -43,16 +47,21 @@ const Home: React.FC = () => {
             await axiosApi.delete(`/meals/${id}.json`);
             setMeals(prevMeals => prevMeals.filter(meal => meal.id !== id));
         } catch (error) {
-            console.error('Error deleting meal:', error);
+            setError('Error deleting meal');
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleClose = () => {
+        setError(null);
     };
 
     const totalCalories = meals.reduce((total, meal) => total + meal.calories, 0);
 
     return (
         <div className="container mt-5">
+            {error && <Notification message={error} type="danger" onClose={handleClose} />}
             <h1>Calorie tracker</h1>
             <p>Total calories: {totalCalories} kcal</p>
             {loading ? <Spinner animation="border" /> : <MealList meals={meals} onEdit={handleEdit} onDelete={handleDelete} />}
