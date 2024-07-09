@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MealProps } from '../../types';
+import { Spinner } from 'react-bootstrap';
 
 const MealItem: React.FC<MealProps> = ({ meal, onEdit, onDelete }) => {
-    const [loading, setLoading] = React.useState(false);
+    const [loading, setLoading] = useState(false);
 
     const handleDelete = async () => {
         setLoading(true);
@@ -23,7 +24,7 @@ const MealItem: React.FC<MealProps> = ({ meal, onEdit, onDelete }) => {
                 <p className="card-text">{meal.calories} kcal</p>
                 <button className="btn btn-primary" onClick={() => onEdit(meal.id)}>Edit</button>
                 <button className="btn btn-danger" onClick={handleDelete} disabled={loading}>
-                    {loading ? 'Deleting...' : 'Delete'}
+                    {loading ? <Spinner animation="border" size="sm" /> : 'Delete'}
                 </button>
             </div>
         </div>
