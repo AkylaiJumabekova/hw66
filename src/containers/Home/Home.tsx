@@ -3,6 +3,7 @@ import MealList from '../../components/MealList/MealList';
 import axiosApi from '../../axiosApi';
 import { useNavigate } from 'react-router-dom';
 import { Meal } from '../../types';
+import { Spinner } from 'react-bootstrap';
 
 const Home: React.FC = () => {
     const [meals, setMeals] = useState<Meal[]>([]);
@@ -54,7 +55,7 @@ const Home: React.FC = () => {
         <div className="container mt-5">
             <h1>Calorie tracker</h1>
             <p>Total calories: {totalCalories} kcal</p>
-            {loading ? <p>Loading...</p> : <MealList meals={meals} onEdit={handleEdit} onDelete={handleDelete} />}
+            {loading ? <Spinner animation="border" /> : <MealList meals={meals} onEdit={handleEdit} onDelete={handleDelete} />}
         </div>
     );
 };
