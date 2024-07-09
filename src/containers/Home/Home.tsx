@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Meal } from '../../types';
 import { Spinner } from 'react-bootstrap';
 import Notification from '../../components/Notification/Notification';
+import TotalCalories from '../../components/TotalCalories/TotalCalories';
 
 const Home: React.FC = () => {
     const [meals, setMeals] = useState<Meal[]>([]);
@@ -16,16 +17,15 @@ const Home: React.FC = () => {
         try {
             setLoading(true);
             const response = await axiosApi.get('/meals.json');
-            const fetchedMeals: Meal[] = [];
-            for (let key in response.data) {
-                if (response.data.hasOwnProperty(key)) {
-                    fetchedMeals.push({
-                        ...response.data[key],
-                        id: key,
-                    });
-                }
+            if (response.data) {
+                const fetchedMeals: Meal[] = Object.keys(response.data).map(key => ({
+                    ...response.data[key],
+                    id: key,
+                }));
+                setMeals(fetchedMeals);
+            } else {
+                setMeals([]);
             }
-            setMeals(fetchedMeals);
         } catch (error) {
             setError('Error fetching meals');
         } finally {
@@ -63,7 +63,7 @@ const Home: React.FC = () => {
         <div className="container mt-5">
             {error && <Notification message={error} type="danger" onClose={handleClose} />}
             <h1>Calorie tracker</h1>
-            <p>Total calories: {totalCalories} kcal</p>
+            <TotalCalories total={totalCalories} />
             {loading ? <Spinner animation="border" /> : <MealList meals={meals} onEdit={handleEdit} onDelete={handleDelete} />}
         </div>
     );
